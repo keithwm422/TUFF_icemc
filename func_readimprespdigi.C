@@ -1,0 +1,95 @@
+// arguments the function needs: list in conv file in github TUFF_icemc
+#ifdef ANITA_UTIL_EXISTS
+void Anita::readTUFFResponseDigitizer(Settings *settings1){
+
+  // Set deltaT to be used in the convolution
+  deltaT = 1/(2.6*16);
+  string graphNames[2][3][16];
+  string fileName;
+  double norm=1;
+ 
+  // For ANITA-2 we have 1 impulse response for VPOL and 1 for HPOL
+  // For ANITA-3 we have 3 impulse responses (Top, Middle, Bottom ring) for VPOL and 3 for HPOL.
+  // Set Graph names for ANITA-2 and ANITA-3
+  if (settings1->WHICH==8){
+    fileName = ICEMC_DATA_DIR+"/sumPicoImpulse.root";
+    
+    for (int iring=0;iring<3;iring++){
+      for (int iphi=1;iphi<17;iphi++){
+	graphNames[0][iring][iphi]="grImpRespV";
+	graphNames[1][iring][iphi]="grImpRespH";
+      }
+    }
+    //Now need to scale our impulse response from unit areas to the area of kronecker-delta (i.e dt)
+    norm*=0.1;
+  } else if(settings1->WHICH==9 || settings1->WHICH==10){
+
+    fileName = ICEMC_DATA_DIR+"/Anita3_ImpulseResponseDigitizer.root";
+
+    string spol[2] ={"V", "H"};
+    string sring[3]={"T", "M", "B"};
+    
+    for (int ipol=0;ipol<2;ipol++){
+      for (int iring=0;iring<3;iring++){
+	for (int iphi=0;iphi<16;iphi++){
+	  graphNames[ipol][iring][iphi] = Form("g%02d%s%s", iphi+1, sring[iring].c_str(), spol[ipol].c_str() ) ;
+	}
+      }
+    }
+
+    // // Impulse response already accounts for trigger/digitizer splitter
+    // norm *= sqrt(2);
+
+  }
+
+  // Read in input file
+  TFile fImpulse(fileName.c_str());
+  
+  if(!fImpulse.IsOpen()) {
+    std::cerr << "Couldn't read siganl chain impulse response from " << fileName << "\n";
+    exit(0);
+  } else {
+
+    for (int ipol=0;ipol<2;ipol++){
+      for (int iring=0;iring<3;iring++){
+	for (int iphi=0;iphi<16;iphi++){
+	  // Read graph
+	  TGraph *grTemp = (TGraph*) fImpulse.Get(graphNames[ipol][iring][iphi].c_str());
+	  if(!grTemp) {
+	    std::cerr << "Couldn't read signal chain impulse response" << graphNames[ipol][iring][iphi] << " from file " << fileName << "\n";
+	    exit(0);
+	  }
+	  // Interpolate to high sampling rate that will be used for the convolution
+	  TGraph *grInt = Tools::getInterpolatedGraph(grTemp,deltaT); 
+	  Int_t nPoints  = grInt->GetN();
+	  Double_t *newx = grInt->GetX();
+	  Double_t *newy = grInt->GetY();
+	  // Normalise
+	  for (int i=0;i<nPoints;i++){
+	    newy[i]=newy[i]*norm;
+	    // change time axis from ns to s
+	    newx[i]=newx[i]*1E-9;
+	  }
+	  // Pave to 0
+	  int paveNum = 8533;
+	  grTemp = new TGraph(nPoints,  newx, newy);
+	  
+	  fSignalChainResponseDigitizer[ipol][iring][iphi] = new RFSignal(FFTtools::padWaveToLength(grTemp, paveNum));
+	  
+	  delete grInt;
+	  delete grTemp;
+
+	  TGraph *gDig  = fSignalChainResponseDigitizer[ipol][iring][iphi]->getFreqMagGraph();
+	  for(int i=0;i<numFreqs;i++) {
+	    fSignalChainResponseDigitizerFreqDomain[ipol][iring][iphi][i]  = gDig->Eval(freqs[i]*1e6);
+	    // cout <<  i <<  " " << ipol << " " << iring << " " << iphi << " " << freqs[i] << " " << fSignalChainResponseDigitizerFreqDomain[ipol][iring][iphi][i]<< endl;
+	  }
+	  delete gDig;
+	  
+	}
+      }
+    }
+  }
+
+}
+
