@@ -17,6 +17,10 @@ and "add some if statements of the type"
 "
 
 Args needed by the function:
+-string for the notch directory (maybe comes from the realTime?).
+-which antenna, or all of them
+     -- (2 parameters: antenna number (0-15) and which ring (B, M, T)?
+
 
 
 Important Checks:

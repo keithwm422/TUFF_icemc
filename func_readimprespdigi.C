@@ -2,6 +2,42 @@
 #ifdef ANITA_UTIL_EXISTS
 void Anita::readTUFFResponseDigitizer(Settings *settings1){
 
+
+//keith added file outdir declared here for testing
+  indir=notches_250_375_0
+//      mkdir(Form("data/responses/TUFFs/%s", outdir), 0777); from andrew code
+  string filenameH;
+  string filenameV;
+  if(ant < 10)
+        {
+           filenameH = Form("%s/data/%s/0%d%cH.imp",getenv("ICEMC_BUILD_DIR"), indir, ant, tmb);
+           filenameV = Form("%s/data/%s/0%d%cV.imp",getenv("ICEMC_BUILD_DIR"), indir, ant, tmb);
+        }
+        else
+        {
+           filenameH = Form("%s/data/%s/%d%cH.imp",getenv("ICEMC_BUILD_DIR"), indir, ant, tmb);
+           filenameV = Form("%s/data/%s/%d%cH.imp",getenv("ICEMC_BUILD_DIR"), indir, ant, tmb);
+        }
+  TGraph graphTUFFH(filenameH);
+  TGraph graphTUFFV(filenameV);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Below this is for the older function for reference when coding
+
+/*------------------------------------------------------------------*/
   // Set deltaT to be used in the convolution
   deltaT = 1/(2.6*16);
   string graphNames[2][3][16];
