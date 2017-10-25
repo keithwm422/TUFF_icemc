@@ -1,6 +1,49 @@
 // arguments the function needs: list in conv file in github TUFF_icemc
 #ifdef ANITA_UTIL_EXISTS
-void Anita::readTUFFResponseDigitizer(Settings *settings1, TString config){
+void Anita::readTUFFResponseDigitizer(Settings *settings1, long_int time){
+// Linda thinks the if statements should go in ChanTrigger.C
+//The read response function I write should load the correct response, then either return that response or convolve it?
+  TString indir;
+
+  if(settings1->WHICH==10)
+  {
+
+    if(time <= config_a_time) // config A //folder notches_260_0_0
+    {
+       indir= "notches_260_0_0";
+    }
+    else if(time <= config_a_time) // config B notches_260_375_0
+    {
+       indir= "notches_260_375_0";
+    }
+    else if(time <= config_a_time) // config C notches_260_0_460
+    {
+       indir= "notches_260_0_460";
+    }
+    else if(time <= config_a_time) // config G notches_260_385_0
+    {
+       indir= "notches_260_385_0";
+    }
+    else if(time <= config_a_time) // config J notches_250_375_0
+    {
+       indir= "notches_250_375_0";
+    }
+    else if(time <= config_a_time) // config O notches_260_365_0
+    {
+       indir= "notches_260_365_0";
+    }
+    else if(time <= config_a_time) // config P notches_260_375_460
+    {
+       indir= "notches_260_375_460";
+    }
+    else
+    {
+       continue;
+    }
+  else
+  {
+    continue;
+  }
 //keith added file outdir declared here for testing
   //Add if statements to compare the time given to this fucntion with the time for which configuration is on.
 
@@ -9,13 +52,13 @@ void Anita::readTUFFResponseDigitizer(Settings *settings1, TString config){
   string filenameV;
   if(ant < 10)
         {
-           filenameH = Form("%s/data/%s/0%d%cH.imp",getenv("ICEMC_BUILD_DIR"), config, ant, tmb);
-           filenameV = Form("%s/data/%s/0%d%cV.imp",getenv("ICEMC_BUILD_DIR"), config, ant, tmb);
+           filenameH = Form("%s/data/%s/0%d%cH.imp",getenv("ICEMC_BUILD_DIR"), indir, ant, tmb);
+           filenameV = Form("%s/data/%s/0%d%cV.imp",getenv("ICEMC_BUILD_DIR"), indir, ant, tmb);
         }
         else
         {
-           filenameH = Form("%s/data/%s/%d%cH.imp",getenv("ICEMC_BUILD_DIR"), config, ant, tmb);
-           filenameV = Form("%s/data/%s/%d%cH.imp",getenv("ICEMC_BUILD_DIR"), config, ant, tmb);
+           filenameH = Form("%s/data/%s/%d%cH.imp",getenv("ICEMC_BUILD_DIR"), indir, ant, tmb);
+           filenameV = Form("%s/data/%s/%d%cH.imp",getenv("ICEMC_BUILD_DIR"), indir, ant, tmb);
         }
   TGraph graphTUFFH(filenameH);
   TGraph graphTUFFV(filenameV);
@@ -23,7 +66,7 @@ void Anita::readTUFFResponseDigitizer(Settings *settings1, TString config){
   // input in time domain. FFT. check if analysis waveform is included? should fucntion return the TGraph or the waveform?
   AnalysisWaveform awfTUFFH(graphTUFFH.GetN(), graphTUFFH.GetY(), graphTUFFH.GetX()[1] - graphTUFFH.GetX()[0], 0);
   (void) awfTUFFH.freq();
-  //do the rest that convolves the response loaded with the waveform or returns the response loaded as TGraphs?
+  // 
 
 
   }
@@ -40,7 +83,6 @@ void Anita::readTUFFResponseDigitizer(Settings *settings1, TString config){
 //Below this is for the older function for reference when coding
 
 /*------------------------------------------------------------------*/
-void Anita::readImpulseResponseDigitizer(Settings *settings1){
   // Set deltaT to be used in the convolution
   deltaT = 1/(2.6*16);
   string graphNames[2][3][16];
@@ -118,14 +160,12 @@ void Anita::readImpulseResponseDigitizer(Settings *settings1){
 	  delete grInt;
 	  delete grTemp;
 
-// make a gDig, tgraph which is a call to the fSignalChainResponseDigitizer function class. 
-          TGraph *gDig  = fSignalChainResponseDigitizer[ipol][iring][iphi]->getFreqMagGraph();
+	  TGraph *gDig  = fSignalChainResponseDigitizer[ipol][iring][iphi]->getFreqMagGraph();
 	  for(int i=0;i<numFreqs;i++) {
-	    fSignalChainResponseDigitizerFreqDomain[ipol][iring][iphi][i]  = gDig->Eval(freqs[i]*1e6); // what is this?
-
+	    fSignalChainResponseDigitizerFreqDomain[ipol][iring][iphi][i]  = gDig->Eval(freqs[i]*1e6);
 	    // cout <<  i <<  " " << ipol << " " << iring << " " << iphi << " " << freqs[i] << " " << fSignalChainResponseDigitizerFreqDomain[ipol][iring][iphi][i]<< endl;
 	  }
-	  delete gDig; // get rid of the gDig
+	  delete gDig;
 	  
 	}
       }
