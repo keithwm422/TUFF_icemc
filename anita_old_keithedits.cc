@@ -377,7 +377,7 @@ void Anita::Initialize(Settings *settings1,ofstream &foutput,int thisInu, TStrin
   }
   if (settings1->APPLYIMPULSERESPONSEDIGITIZER){
     readImpulseResponseDigitizer(settings1);
-    readTuffResponseDigitizer(settings1);
+//    readTuffResponseDigitizer(settings1);
   }
   if (settings1->APPLYIMPULSERESPONSETRIGGER){
     readImpulseResponseTrigger(settings1);
@@ -4100,47 +4100,49 @@ void Anita::readImpulseResponseDigitizer(Settings *settings1){
 }
 
 //begin Keith added 
-void Anita::readTuffResponseDigitizer(Settings *settings1){
+void Anita::readTuffResponseDigitizer(Settings *settings1, TString notch_files, int ant, int iring, bool pol){
 //keith added file outdir declared here for testing
-// for loops to make the RFSignal array that can be used in applyImpulseResponse of ChanTrigger.cc
-  // ipol is the polarization "v" or "H" 
-  // ring is the number 3 for tmb or bottom middle top
-  // iphi is the antenna number
-  // ituff is the notch directory
-//  if(){
- 
-    string filename;
+  //Add if statements to compare the time given to this fucntion with the time for which configuration is on.
+//      mkdir(Form("data/responses/TUFFs/%s", outdir), 0777); from andrew code
+  string filename;
 //  string filenameV;
-    string snotch_dir[6]={"notches_260_0_0","notches_260_375_0","notches_260_0_460","notches_260_385_0","notches_260_365_0","notches_260_375_460"};
-    string spol[2] = {"V","H"};
-    string sring[3] = {"T","M","B"};
-    for(int ipol=0; ipol<=1; ipol++)
-    {
-      for(int iring = 0; iring<=2; iring++)
-          {
-            for(int iphi=0; iphi<=15; iphi++)
-            {
-              for(int ituff=0; ituff <=5; ituff++)
-              {
-                if(iphi < 10)
-                {
-                  filename = Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff], iphi, sring[iring], spol[ipol]);
-//                       filenameV = Form("%s/data/%s/0%d%cV.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb);
-                  cout << Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff], iphi, sring[iring], spol[ipol]) << endl;
-                }
-                else
-                {
-                  filename = Form("%s/data/%s/%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff], iphi, sring[iring], spol[ipol]);
-//                     filenameV = Form("%s/data/%s/%d%cH.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb);
-                }
-          TGraph *gtemp = new TGraph(filename);
-              int paveNum=8533; // change for 0 to just signal back 
-          RFSignal *fSignalChainResponseDigitizerTuffs[ipol][iring][iphi][ituff] = new RFSignal(FFTtools::padWaveToLength(gtemp, paveNum)); // Linda help please
-          delete gtemp;
-        }// end for loop ituff
-      } // end for loop iphi
-    }// end for loop iring
-  }// end for loop ipol
+  string polz = "V";
+  string tmb = "T";
+  if(iring == 2){
+   tmb = "B";
+  }
+  if(iring==1){
+    tmb = "M";
+  }
+  if (pol){
+    polz="H";
+    cout << pol << endl;
+  }
+  if(ant < 10)
+        {
+           filename = Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb, polz);
+//           filenameV = Form("%s/data/%s/0%d%cV.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb);
+           cout << Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb, polz) << endl;
+        }
+        else
+        {
+           filename = Form("%s/data/%s/%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb, polz);
+//           filenameV = Form("%s/data/%s/%d%cH.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb);
+        }
+
+  RFSignal *fSignalChainResponseDigitizerTuffs[][][];
+//  TGraph *graphTUFF= new TGraph(filename);
+//  TGraph graphTUFFV(filenameV);
+  
+  // input in time domain. FFT. check if analysis waveform is included? should fucntion return the TGraph or the waveform?
+//  AnalysisWaveform awfTUFF(graphTUFF.GetN(), graphTUFF.GetY(), graphTUFF.GetX()[1] - graphTUFF.GetX()[0], 0);
+//  (void) awfTUFF.freq();
+
+//  AnalysisWaveform awfTUFFV(graphTUFFV.GetN(), graphTUFFV.GetY(), graphTUFFV.GetX()[1] - graphTUFFV.GetX()[0], 0);
+//  (void) awfTUFFV.freq();
+  //do the rest that convolves the response loaded with the waveform or returns the response loaded as TGraphs?
+// ask Linda what should be convolved?
+
 }
 // end Keith added
 
