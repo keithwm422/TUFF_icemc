@@ -4109,7 +4109,7 @@ void Anita::readTuffResponseDigitizer(Settings *settings1){
   // ituff is the notch directory
 //  if(){
  
-    string filename;
+    TString filename;
 //  string filenameV;
     string snotch_dir[6]={"notches_260_0_0","notches_260_375_0","notches_260_0_460","notches_260_385_0","notches_260_365_0","notches_260_375_460"};
     string spol[2] = {"V","H"};
@@ -4124,13 +4124,13 @@ void Anita::readTuffResponseDigitizer(Settings *settings1){
               {
                 if(iphi < 10)
                 {
-                  filename = Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff], iphi, sring[iring], spol[ipol]);
+                  filename = Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi, sring[iring].c_str(), spol[ipol].c_str());
 //                       filenameV = Form("%s/data/%s/0%d%cV.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb);
-                  cout << Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff], iphi, sring[iring], spol[ipol]) << endl;
+                  cout << Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi, sring[iring].c_str(), spol[ipol].c_str()) << endl;
                 }
                 else
                 {
-                  filename = Form("%s/data/%s/%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff], iphi, sring[iring], spol[ipol]);
+                  filename = Form("%s/data/%s/%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi, sring[iring].c_str(), spol[ipol].c_str());
 //                     filenameV = Form("%s/data/%s/%d%cH.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb);
                 }
           TGraph *gtemp = new TGraph(filename);
