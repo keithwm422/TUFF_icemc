@@ -585,6 +585,9 @@ public:
   double extraCableDelays[2][48];
   TRandom3 *fRand;
 #ifdef ANITA_UTIL_EXISTS
+//begin Keith added
+  RFSignal *fSignalChainResponseDigitizerTuffs[2][3][16][6]; // 0:VPOL, 1:HPOL ---- 0:TOP, 1:MIDDLE, 2:BOTTOM------- 0:configA, 1:configB, 2:configC, 3:configG, 4:configO, 5:configP
+// end Keith added
   void readImpulseResponseDigitizer(Settings *settings1);
   void readImpulseResponseTrigger(Settings *settings1);
 //begin keith added
@@ -598,9 +601,6 @@ public:
   Double_t *freqs;
   TGraph *gPulseAtAmpa;
   RFSignal *fSignalChainResponseDigitizer[2][3][16]; // 0:VPOL, 1:HPOL ---- 0:TOP, 1:MIDDLE, 2:BOTTOM
-//begin Keith added
-  RFSignal *fSignalChainResponseDigitizerTuffs[2][3][16][6]; // 0:VPOL, 1:HPOL ---- 0:TOP, 1:MIDDLE, 2:BOTTOM------- 0:configA, 1:configB, 2:configC, 3:configG, 4:configO, 5:configP
-// end Keith added
   RFSignal *fSignalChainResponseTrigger[2][3][16]; // 0:VPOL, 1:HPOL ---- 0:TOP, 1:MIDDLE, 2:BOTTOM
 #endif
   Double_t fTimes[HALFNFOUR];

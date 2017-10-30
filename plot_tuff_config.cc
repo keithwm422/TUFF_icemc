@@ -14,7 +14,9 @@ void plot_tuff_config()
 
 // Declare the file to open for the tuff configuration
      ifstream config_infile;
-     config_infile.open("configAdb.csv");
+     string config_name;
+     config_name=Form("configAdb.csv");
+     config_infile.open(config_name);
 
      TCanvas *c1= new TCanvas("testing TUFF config plots", "mutlipads", 1000, 1000);
      TProfile *config_dbr = new TProfile ("TUFF config dbr", "TUFF configuration dbr", 500, 0, 1.6e+09);

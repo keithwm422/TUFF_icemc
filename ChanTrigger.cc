@@ -1534,7 +1534,8 @@ void ChanTrigger::applyImpulseResponseDigitizer(Settings *settings1, Anita *anit
 
   // Upsample waveform to same deltaT of the signal chain impulse response
   TGraph *graphUp = FFTtools::getInterpolatedGraph(graph1, anita1->deltaT);
-
+  //for debugging
+  TGraph *surfSignal = new TGraph(nPoints, x, y);
   int ipol=0;
   int iring=2;
   if (pol) ipol = 1;
@@ -1546,11 +1547,11 @@ void ChanTrigger::applyImpulseResponseDigitizer(Settings *settings1, Anita *anit
 // begin Keith edited
   //Calculate convolution
 
-  if(!settings1->USETUFFS){
-    TGraph *surfSignal = FFTtools::getConvolution(graphUp, anita1->fSignalChainResponseDigitizer[ipol][iring][iphi]);
+  if(!settings1->TUFFSON){
+    surfSignal = FFTtools::getConvolution(graphUp, anita1->fSignalChainResponseDigitizer[ipol][iring][iphi]);
   }
   // keith editing debugging
-  cout << ant << endl;
+//  cout << ant << endl;
 // begin keith added
   else
   {
@@ -1581,19 +1582,20 @@ void ChanTrigger::applyImpulseResponseDigitizer(Settings *settings1, Anita *anit
     int config_P_end_7 = 1482987942;
 
 // end of list of times for notch switching
-    if(config_B_end_3 < Curr_time <= config_A_end_1) // config A //folder notches_260_0_0
+  
+   if((config_B_end_3 < Curr_time) && (Curr_time <= config_A_end_1)) // config A //folder notches_260_0_0
     {
        notch=0;
     }
-    else if(0 < Curr_time <= config_B_end_1 || config_P_end_3 < Curr_time <= config_B_end_2 || config_P_end_4 < Curr_time <= config_B_end_3 || config_A_end_1 < Curr_time <= config_B_end_4 || config_P_end_5 < Curr_time <= config_B_end_5 || config_P_end_6 < Curr_time <= config_B_end_6 || config_P_end_7 < Curr_time ) // config B notches_260_375_0
+    else if(((0 < Curr_time) && (Curr_time <= config_B_end_1)) || ((config_P_end_3 < Curr_time) && (Curr_time <= config_B_end_2)) || ((config_P_end_4 < Curr_time) && (Curr_time <= config_B_end_3)) || ((config_A_end_1 < Curr_time) && (Curr_time <= config_B_end_4)) || ((config_P_end_5 < Curr_time) && (Curr_time <= config_B_end_5)) || ((config_P_end_6 < Curr_time) && (Curr_time <= config_B_end_6)) || (config_P_end_7 < Curr_time) ) // config B notches_260_375_0
     {
        notch=1;
     }
-    else if(config_P_end_1 < Curr_time <= config_C_end_1) // config C notches_260_0_460
+    else if((config_P_end_1 < Curr_time) && (Curr_time <= config_C_end_1)) // config C notches_260_0_460
     {
        notch=2;
     }
-    else if(config_P_end_2 < Curr_time <= config_G_end_1 || config_O_end_1 < Curr_time <= config_G_end_2) // config G notches_260_385_0
+    else if( ((config_P_end_2 < Curr_time) && (Curr_time <= config_G_end_1)) || ((config_O_end_1 < Curr_time) && (Curr_time <= config_G_end_2)) ) // config G notches_260_385_0
     {
        notch=3;
     }
@@ -1603,15 +1605,15 @@ void ChanTrigger::applyImpulseResponseDigitizer(Settings *settings1, Anita *anit
        indir= "notches_250_375_0";
     }
 */
-    else if(config_G_end_1 < Curr_time <= config_O_end_1 || config_G_end_2 < Curr_time <= config_O_end_2) // config O notches_260_365_0
+    else if( ((config_G_end_1 < Curr_time) && (Curr_time <= config_O_end_1)) || ((config_G_end_2 < Curr_time) && (Curr_time <= config_O_end_2)) ) // config O notches_260_365_0
     {
        notch=4;
     }
-    else if(config_B_end_1 < Curr_time <= config_P_end_1 || config_C_end_1 < Curr_time <= config_P_end_2 || config_O_end_2 < Curr_time <= config_P_end_3 || config_B_end_2 < Curr_time <= config_P_end_4 || config_B_end_4 < Curr_time <= config_P_end_5 || config_B_end_5 < Curr_time <= config_P_end_6 || config_B_end_6 < Curr_time <= config_P_end_7) // config P notches_260_375_460
+    else if( ((config_B_end_1 < Curr_time) && (Curr_time <= config_P_end_1)) || ((config_C_end_1 < Curr_time) && (Curr_time <= config_P_end_2)) || ((config_O_end_2 < Curr_time) && (Curr_time <= config_P_end_3)) || ((config_B_end_2 < Curr_time) && (Curr_time <= config_P_end_4)) || ((config_B_end_4 < Curr_time) && (Curr_time <= config_P_end_5)) || ((config_B_end_5 < Curr_time) && (Curr_time <= config_P_end_6)) || ((config_B_end_6 < Curr_time) && (Curr_time <= config_P_end_7)) ) // config P notches_260_375_460
     {
        notch=5;
     }
-    TGraph *surfSignal = FFTtools::getConvolution(graphUp, anita1->fSignalChainResponseDigitizerTuffs[ipol][iring][iphi][notch]); 
+    surfSignal = FFTtools::getConvolution(graphUp, anita1->fSignalChainResponseDigitizerTuffs[ipol][iring][iphi][notch]); 
     // convolve this loaded response with graphUp
 
   }// end esle for ANITA-4

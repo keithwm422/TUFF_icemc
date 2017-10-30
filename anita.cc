@@ -4108,7 +4108,7 @@ void Anita::readTuffResponseDigitizer(Settings *settings1){
   // iphi is the antenna number
   // ituff is the notch directory
 //  if(){
- 
+//    RFSignal *fSignalChainResponseDigitizerTuffs[][][][]
     TString filename;
 //  string filenameV;
     string snotch_dir[6]={"notches_260_0_0","notches_260_375_0","notches_260_0_460","notches_260_385_0","notches_260_365_0","notches_260_375_460"};
@@ -4122,20 +4122,20 @@ void Anita::readTuffResponseDigitizer(Settings *settings1){
             {
               for(int ituff=0; ituff <=5; ituff++)
               {
-                if(iphi < 10)
+                if(iphi+1 < 10)
                 {
-                  filename = Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi, sring[iring].c_str(), spol[ipol].c_str());
+                  filename = Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi+1, sring[iring].c_str(), spol[ipol].c_str());
 //                       filenameV = Form("%s/data/%s/0%d%cV.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb);
-                  cout << Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi, sring[iring].c_str(), spol[ipol].c_str()) << endl;
+                  cout << Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi+1, sring[iring].c_str(), spol[ipol].c_str()) << endl;
                 }
                 else
                 {
-                  filename = Form("%s/data/%s/%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi, sring[iring].c_str(), spol[ipol].c_str());
+                  filename = Form("%s/data/%s/%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi+1, sring[iring].c_str(), spol[ipol].c_str());
 //                     filenameV = Form("%s/data/%s/%d%cH.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb);
                 }
           TGraph *gtemp = new TGraph(filename);
               int paveNum=8533; // change for 0 to just signal back 
-          RFSignal *fSignalChainResponseDigitizerTuffs[ipol][iring][iphi][ituff] = new RFSignal(FFTtools::padWaveToLength(gtemp, paveNum)); // Linda help please
+          fSignalChainResponseDigitizerTuffs[ipol][iring][iphi][ituff] = new RFSignal(FFTtools::padWaveToLength(gtemp, paveNum)); // Linda help please
           delete gtemp;
         }// end for loop ituff
       } // end for loop iphi
