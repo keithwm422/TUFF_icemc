@@ -1,0 +1,11 @@
+#!/bin/bash
+#PBS -l walltime=0:40:00
+#PBS -l nodes=1:ppn=1
+#PBS -N 20_thousand_neutrino_e21_TUFF_icemc
+#PBS -j oe 
+#PBS -m abe
+#PBS -M mcbride.342@osu.edu
+
+cd /home/mcbride.342/TUFF_icemc/icemc
+source env_tuffs.sh
+./icemc -i inputs.anita4.conf -o run1 -r 1 > log_a4_e21_tuff.txt
