@@ -4126,7 +4126,7 @@ void Anita::readTuffResponseDigitizer(Settings *settings1){
                 {
                   filename = Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi+1, sring[iring].c_str(), spol[ipol].c_str());
 //                       filenameV = Form("%s/data/%s/0%d%cV.imp",getenv("ICEMC_BUILD_DIR"), notch_files, ant, tmb);
-                  cout << Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi+1, sring[iring].c_str(), spol[ipol].c_str()) << endl;
+//                  cout << Form("%s/data/%s/0%d%s%s.imp",getenv("ICEMC_BUILD_DIR"), snotch_dir[ituff].c_str(), iphi+1, sring[iring].c_str(), spol[ipol].c_str()) << endl;
                 }
                 else
                 {
